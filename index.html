@@ -1,292 +1,44 @@
-
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Doubts-AG: Tu Asistente de Dudas (Verde)</title>
-    <!-- Incluye Tailwind CSS para un estilizado fácil y responsivo -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        /* Estilo personalizado para usar la fuente Inter y asegurar que la altura sea completa */
-        body {
-            font-family: 'Inter', sans-serif;
-            min-height: 100vh; /* Asegura que el cuerpo ocupe al menos toda la altura de la ventana */
-            display: flex; /* Utiliza flexbox para centrar contenido */
-            justify-content: center; /* Centra horizontalmente */
-            align-items: center; /* Centra verticalmente */
-            background-color: #e0f2fe; /* Un fondo azul muy claro para complementar el verde */
-        }
-        #chat-container {
-            display: flex;
-            flex-direction: column;
-            width: 100%;
-            max-width: 600px;
-            height: 90vh; /* Altura del contenedor del chat */
-            max-height: 800px;
-            background-color: #ffffff;
-            border-radius: 1rem; /* Bordes redondeados */
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra ligera */
-            overflow: hidden; /* Oculta el desbordamiento si el contenido es demasiado grande */
-        }
-        #messages-container {
-            flex-grow: 1; /* Permite que este contenedor ocupe el espacio disponible */
-            overflow-y: auto; /* Habilita el desplazamiento vertical si los mensajes se desbordan */
-            padding: 1rem;
-            display: flex;
-            flex-direction: column;
-            gap: 0.75rem; /* Espacio entre mensajes */
-            background-color: #f0fdf4; /* Fondo verde muy claro para los mensajes */
-        }
-        .message {
-            max-width: 80%;
-            padding: 0.75rem 1rem;
-            border-radius: 0.75rem; /* Bordes redondeados para los mensajes */
-            word-wrap: break-word; /* Rompe palabras largas */
-        }
-        .user-message {
-            align-self: flex-end; /* Alinea los mensajes del usuario a la derecha */
-            background-color: #22c55e; /* Verde brillante para mensajes de usuario */
-            color: #ffffff;
-            border-bottom-right-radius: 0.25rem; /* Pequeño ajuste para la burbuja */
-        }
-        .bot-message {
-            align-self: flex-start; /* Alinea los mensajes del bot a la izquierda */
-            background-color: #d1fae5; /* Verde claro para mensajes del bot */
-            color: #1f2937;
-            border-bottom-left-radius: 0.25rem; /* Pequeño ajuste para la burbuja */
-        }
-        #input-area {
-            display: flex;
-            padding: 1rem;
-            border-top: 1px solid #e0e0e0; /* Borde superior */
-            background-color: #ffffff;
-        }
-        #user-input {
-            flex-grow: 1; /* Permite que el input ocupe el espacio disponible */
-            padding: 0.75rem;
-            border: 1px solid #d1d5db; /* Borde para el input */
-            border-radius: 0.5rem; /* Bordes redondeados */
-            outline: none; /* Quita el contorno al enfocar */
-            font-size: 1rem;
-        }
-        #send-button {
-            margin-left: 0.75rem;
-            padding: 0.75rem 1.5rem;
-            background-color: #15803d; /* Verde oscuro para el botón de enviar */
-            color: #ffffff;
-            border-radius: 0.5rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background-color 0.2s; /* Transición suave al pasar el ratón */
-        }
-        #send-button:hover {
-            background-color: #166534; /* Verde aún más oscuro al pasar el ratón */
-        }
-        .loading-indicator {
-            align-self: flex-start;
-            padding: 0.75rem 1rem;
-            border-radius: 0.75rem;
-            background-color: #d1fae5;
-            color: #1f2937;
-            font-style: italic;
-        }
-    </style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>doubts-AG · IA de dudas</title>
+  <meta name="description" content="Asistente IA en verde para resolver dudas de todo tipo." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='46' fill='%2316a34a'/><text x='50' y='58' font-size='48' text-anchor='middle' fill='white' font-family='Arial'>AG</text></svg>">
+  <link rel="stylesheet" href="/app.css">
 </head>
 <body>
-    <div id="chat-container">
-        <h1 class="text-3xl font-bold text-center p-4 bg-gradient-to-r from-emerald-500 to-green-700 text-white rounded-t-xl">
-            Doubts-AG
-        </h1>
-        <div id="messages-container">
-            <!-- Los mensajes del chat se añadirán aquí -->
-            <div class="bot-message message">¡Hola! Soy Doubts-AG, tu asistente personal. ¿En qué puedo ayudarte hoy?</div>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand">
+        <div class="logo">AG</div>
+        <div class="titles">
+          <h1>doubts-AG</h1>
+          <p class="subtitle">Resuelve tus dudas al instante</p>
         </div>
-        <div id="input-area">
-            <input type="text" id="user-input" placeholder="Escribe tu pregunta aquí..." autocomplete="off">
-            <button id="send-button">Enviar</button>
-        </div>
-    </div>
+      </div>
+      <a class="repo" href="#" onclick="alert('¡Sube esta carpeta a tu GitHub!')">Ver en GitHub</a>
+    </header>
 
-    <script type="module">
-        // Importa las funciones de Firebase necesarias
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-        import { getFirestore } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    <main class="chat">
+      <div id="messages" class="messages" aria-live="polite"></div>
 
-        // Variables globales para Firebase y la historia del chat
-        let app;
-        let auth;
-        let db;
-        let userId;
-        let chatHistory = []; // Almacena el historial de la conversación
+      <form id="composer" class="composer" autocomplete="off">
+        <input id="prompt" name="prompt" type="text" placeholder="Escribe tu duda…" required />
+        <button id="send" type="submit" title="Enviar">Enviar</button>
+      </form>
+      <p class="hint">Consejo: pulsa <kbd>Enter</kbd> para enviar · <kbd>Shift</kbd> + <kbd>Enter</kbd> para nueva línea</p>
+    </main>
 
-        // Obtiene las configuraciones y el token de autenticación del entorno
-        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
-        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+    <footer class="footer">
+      <span>Hecho con ❤ por doubts-AG</span>
+    </footer>
+  </div>
 
-        // Elementos del DOM
-        const messagesContainer = document.getElementById('messages-container');
-        const userInput = document.getElementById('user-input');
-        const sendButton = document.getElementById('send-button');
-
-        // Función para añadir mensajes al contenedor del chat
-        function addMessage(text, sender) {
-            const messageDiv = document.createElement('div');
-            messageDiv.classList.add('message');
-            if (sender === 'user') {
-                messageDiv.classList.add('user-message');
-            } else {
-                messageDiv.classList.add('bot-message');
-            }
-            messageDiv.textContent = text;
-            messagesContainer.appendChild(messageDiv);
-            // Desplaza hacia abajo para ver el último mensaje
-            messagesContainer.scrollTop = messagesContainer.scrollHeight;
-        }
-
-        // Función para mostrar/ocultar el indicador de carga
-        function showLoadingIndicator(show) {
-            let loadingDiv = document.getElementById('loading-spinner');
-            if (show) {
-                if (!loadingDiv) {
-                    loadingDiv = document.createElement('div');
-                    loadingDiv.id = 'loading-spinner';
-                    loadingDiv.classList.add('loading-indicator');
-                    loadingDiv.textContent = 'Doubts-AG está pensando...';
-                    messagesContainer.appendChild(loadingDiv);
-                }
-                messagesContainer.scrollTop = messagesContainer.scrollHeight;
-            } else {
-                if (loadingDiv) {
-                    loadingDiv.remove();
-                }
-            }
-        }
-
-        // Función para inicializar Firebase y autenticar al usuario
-        async function initializeFirebase() {
-            try {
-                app = initializeApp(firebaseConfig);
-                auth = getAuth(app);
-                db = getFirestore(app);
-
-                // Autenticar al usuario
-                if (initialAuthToken) {
-                    await signInWithCustomToken(auth, initialAuthToken);
-                } else {
-                    await signInAnonymously(auth);
-                }
-
-                // Obtener el userId después de la autenticación
-                onAuthStateChanged(auth, (user) => {
-                    if (user) {
-                        userId = user.uid;
-                        console.log("Usuario autenticado con ID:", userId);
-                    } else {
-                        // Si el usuario no está autenticado, genera un ID aleatorio (para sesiones anónimas si es necesario)
-                        userId = crypto.randomUUID();
-                        console.log("Sesión anónima, ID de usuario generado:", userId);
-                    }
-                });
-
-            } catch (error) {
-                console.error("Error al inicializar Firebase o autenticar:", error);
-                addMessage("Lo siento, no pude iniciar el servicio de chat en este momento. Inténtalo de nuevo más tarde.", 'bot');
-            }
-        }
-
-        // Función para llamar a la API de Gemini
-        async function getGeminiResponse(prompt) {
-            showLoadingIndicator(true); // Muestra el indicador de carga
-            let retries = 0;
-            const maxRetries = 5;
-            const baseDelay = 1000; // 1 segundo
-
-            while (retries < maxRetries) {
-                try {
-                    // Añade la pregunta del usuario al historial para enviarla al modelo
-                    chatHistory.push({ role: "user", parts: [{ text: prompt }] });
-
-                    const payload = {
-                        contents: chatHistory
-                    };
-
-                    const apiKey = ""; // La API key será proporcionada por el entorno en tiempo de ejecución
-                    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
-
-                    const response = await fetch(apiUrl, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(payload)
-                    });
-
-                    if (!response.ok) {
-                        const errorData = await response.json();
-                        if (response.status === 429) { // Demasiadas solicitudes (Too Many Requests)
-                            retries++;
-                            const delay = baseDelay * Math.pow(2, retries - 1); // Retardo exponencial
-                            console.warn(`Demasiadas solicitudes. Reintentando en ${delay / 1000} segundos...`);
-                            await new Promise(resolve => setTimeout(resolve, delay));
-                            continue; // Reintentar la solicitud
-                        } else {
-                            throw new Error(`Error de API: ${response.status} - ${errorData.error.message || response.statusText}`);
-                        }
-                    }
-
-                    const result = await response.json();
-
-                    if (result.candidates && result.candidates.length > 0 &&
-                        result.candidates[0].content && result.candidates[0].content.parts &&
-                        result.candidates[0].content.parts.length > 0) {
-                        const text = result.candidates[0].content.parts[0].text;
-                        chatHistory.push({ role: "model", parts: [{ text: text }] }); // Añade la respuesta del modelo al historial
-                        showLoadingIndicator(false); // Oculta el indicador de carga
-                        return text;
-                    } else {
-                        console.error("Respuesta de la API con estructura inesperada:", result);
-                        showLoadingIndicator(false);
-                        return "Lo siento, no pude obtener una respuesta en este momento. La IA no generó texto.";
-                    }
-                } catch (error) {
-                    console.error("Error al llamar a la API de Gemini:", error);
-                    showLoadingIndicator(false);
-                    if (retries < maxRetries) {
-                        retries++;
-                        const delay = baseDelay * Math.pow(2, retries - 1); // Retardo exponencial
-                        console.warn(`Error al llamar a la API. Reintentando en ${delay / 1000} segundos...`);
-                        await new Promise(resolve => setTimeout(resolve, delay));
-                    } else {
-                        return "Hubo un error al procesar tu solicitud. Por favor, inténtalo de nuevo más tarde.";
-                    }
-                }
-            }
-            return "Lo siento, no pude obtener una respuesta después de varios intentos. Por favor, inténtalo de nuevo más tarde.";
-        }
-
-        // Manejador del evento de envío
-        async function sendMessage() {
-            const question = userInput.value.trim();
-            if (question) {
-                addMessage(question, 'user');
-                userInput.value = ''; // Limpia el input
-
-                const botResponse = await getGeminiResponse(question);
-                addMessage(botResponse, 'bot');
-            }
-        }
-
-        // Event Listeners
-        sendButton.addEventListener('click', sendMessage);
-        userInput.addEventListener('keypress', function(event) {
-            if (event.key === 'Enter') {
-                sendMessage();
-            }
-        });
-
-        // Inicializa Firebase al cargar la ventana
-        window.onload = initializeFirebase;
-    </script>
+  <script src="/app.js" defer></script>
 </body>
 </html>
